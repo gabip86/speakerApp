@@ -4,6 +4,7 @@ import SpeakersToolbar from "./SpeakersToolbar";
 
 const Speakers = ({ theme, setTheme }) => {
   const [showSessions, setShowSessions] = useState(true);
+  
   return (
     <>
       <SpeakersToolbar

@@ -1,9 +1,7 @@
 import App from "../src/components/App";
 
 const IndexPage = () => {
-  return (
-    <App />
-  );
+  return <App />;
 };
 
-export default App;
+export default IndexPage;
