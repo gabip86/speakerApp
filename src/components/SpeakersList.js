@@ -1,14 +1,17 @@
 import Speaker from "./Speaker";
 import ReactPlaceHolder from "react-placeholder";
-import useRequestSpeakers from "../hooks/useRequestSpeakers";
+import useRequestDelay, { REQUEST_STATUS } from "../hooks/useRequestDelay";
+import { data } from "../../SpeakerData";
 
 const SpeakersList = ({ showSessions }) => {
-  const { speakerData, isLoading, hasErrored, error, onFavoriteToggle } =
-    useRequestSpeakers(2000);
+  const {
+    data: speakerData,
+    requestStatus,
+    error,
+    updateRecord,
+  } = useRequestDelay(2000, data);
 
-  // Better to escape the if statement, than have multiple return statements
-  // KIS - Keep It Simple
-  if (hasErrored === true) {
+  if (requestStatus === REQUEST_STATUS.FAILURE) {
     return (
       <div className="text-danger">
         ERROR: <b>loading Speaker Data Failed {error}</b>
@@ -22,7 +25,7 @@ const SpeakersList = ({ showSessions }) => {
         type="media"
         rows={15}
         className="speakerslist-placeholder"
-        ready={isLoading === false}
+        ready={requestStatus === REQUEST_STATUS.SUCCESS}
       >
         <div className="row">
           {speakerData.map(function (speaker) {
@@ -31,8 +34,14 @@ const SpeakersList = ({ showSessions }) => {
                 key={speaker.id}
                 speaker={speaker}
                 showSessions={showSessions}
-                onFavoriteToggle={() => {
-                  onFavoriteToggle(speaker.id);
+                onFavoriteToggle={(doneCallback) => {
+                  updateRecord(
+                    {
+                      ...speaker,
+                      favorite: !speaker.favorite,
+                    },
+                    doneCallback
+                  );
                 }}
               />
             );
