@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 export const REQUEST_STATUS = {
   LOADING: "loading",
@@ -6,8 +7,10 @@ export const REQUEST_STATUS = {
   FAILURE: "failure",
 };
 
-function useRequestDelay(delayTime = 1000, initialData = []) {
-  const [data, setData] = useState(initialData);
+const restUrl = "api/speakers";
+
+function useRequestRest() {
+  const [data, setData] = useState([]);
   const [requestStatus, setRequestStatus] = useState(REQUEST_STATUS.LOADING);
   const [error, setError] = useState("");
 
@@ -16,10 +19,9 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
   useEffect(() => {
     async function delayFunc() {
       try {
-        await delay(delayTime);
-        // throw "Had Error.";
+        const result = await axios.get(restUrl);
         setRequestStatus(REQUEST_STATUS.SUCCESS);
-        setData(data);
+        setData(result.data);
       } catch (e) {
         setRequestStatus(REQUEST_STATUS.FAILURE);
         setError(e);
@@ -37,7 +39,7 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
     async function delayFunction() {
       try {
         setData(newRecords);
-        await delay(delayTime);
+        await axios.put(`${restUrl}/${record.id}`, record);
         if (doneCallback) {
           doneCallback();
         }
@@ -59,7 +61,7 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
     async function delayFunction() {
       try {
         setData(newRecords);
-        await delay(delayTime);
+        await axios.put(`${restUrl}/99999`, record);
         if (doneCallback) {
           doneCallback();
         }
@@ -83,7 +85,7 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
     async function delayFunction() {
       try {
         setData(newRecords);
-        await delay(delayTime);
+        await axios.delete(`${restUrl}/${record.id}`, record);
         if (doneCallback) {
           doneCallback();
         }
@@ -122,4 +124,4 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
   };
 }
 
-export default useRequestDelay;
+export default useRequestRest;
